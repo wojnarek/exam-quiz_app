@@ -13,7 +13,7 @@ The application is not a front-end work of art.
 The main goal of the project was to explore java language and learn nosql database MonogoDB
 - **Backend**: Java + Spring Boot
 - **Frontend**: Thymeleaf + TailwindCSS
-- **Baza danych**: MongoDB
+- **Database**: MongoDB
 - **Other**: Some Javascript to improve UX
 
 ## Some screenshots (question creator, exam managment)
