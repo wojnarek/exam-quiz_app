@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<style>
+    .namesurname{
+        margin-left: 30px;
+    }
+
+    .testnamedate{
+        margin-left: 140px;
+    }
+
+    .questions{
+        margin-top: 50px;
+    }
+
+    .answers{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+</style>
+</head>
+<body>
+<div class="namesurname">
+    <h4>Imie i nazwisko:______________________<span class="testnamedate"><span th:text="${testdetails.name}"></span> - <span th:text="${testdetails.start_date}"></span></span></h4>
+
+</div>
+<div th:each = "q : ${questions}">
+    <h3 th:text="${q.question_content}"></h3>
+    <ul th:each="qa : ${q.answers}" class="answers">
+        <li th:text="${qa}"></li>
+    </ul>
+    <hr class="questions"></hr>
+</div>
+
+
+</body>
+</html>

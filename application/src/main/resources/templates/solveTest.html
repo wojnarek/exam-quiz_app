@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/circular-countdown.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<style></style>
+
+<script>
+
+    let time_to_answer = 0;
+    const questions = [];
+    let qCount;
+    let rnumbers = [];
+    let questionid;
+    let lastQ = false;
+    let cheatCount = 0;
+    let finalLenght;
+    let tempquestion = [];
+
+    function getArrayRndInteger(min, max) {
+        let numbers = [];
+        for (let i = 0; i < max; i++) {
+            do {
+                n = Math.floor(Math.random() * (max - min + 1)) + min;
+                p = numbers.includes(n);
+                if (!p) {
+                    numbers.push(n);
+                }
+            }
+            while (p);
+        }
+        return numbers;
+    }
+
+    function getRndInteger(min, max) {
+        n = Math.floor(Math.random() * (max - min + 1)) + min;
+        return n;
+    }
+
+    function Question(rnumber, qid, tid) {
+        this.rnumber = rnumber;
+        this.qid = qid;
+        this.tid = tid;
+    }
+
+    function getQuestion() {
+        const formElement = document.getElementById("start_form");
+        const formData = new FormData(formElement);
+        time_to_answer = formData.get("time");
+        fetch('/solve/start', {
+            method: 'POST',
+            processData: false,
+            body: formData,
+        }).then((response) => response.json())
+            .then((data) => {
+                $("#start_form").remove();
+                rnumbers = getArrayRndInteger(1, Object.keys(data).length);
+                qCount = Object.keys(data).length;
+                for (i = 0; i < Object.keys(data).length; i++) {
+                    questions.push(new Question(rnumbers[i], data[i].id, formData.get('test_id')));
+                }
+                ;
+                finalLenght = questions.length;
+            });
+    }
+
+
+    // window.onload = function () {
+    //     if (localStorage.getItem("firstLoad") === null) {
+    //         getQuestion();
+    //         localStorage.setItem("firstLoad", true);
+    //         localStorage.setItem("exp_time",)
+    //     }
+    //  }
+
+
+
+
+    function getNextQuestion() {
+        $("#button_start").remove();
+        $(".mainbutton").show();
+
+        let object;
+        let nextQuestionData = new FormData();
+
+        if(questions.length < finalLenght){
+            saveAnswer();
+        }
+
+        if (questions.length < 2) {
+            lastQ = true;
+            object = questions[0];
+            questionid = object.qid;
+            questions.splice(0, questions.length);
+        } else {
+            do {
+                let rn = getRndInteger(1, qCount);
+                object = questions.find(o => o.rnumber === rn);
+            } while (object === undefined)
+            let indexDelete = questions.indexOf(object);
+            questions.splice(indexDelete, 1);
+        }
+
+        questionid = object.qid;
+        nextQuestionData.append("question_id", object.qid);
+        nextQuestionData.append("test_id", object.tid);
+
+
+        fetch('/solve/getnextquestion', {
+            method: 'POST',
+            processData: false,
+            body: nextQuestionData,
+        }).then(response => response.json())
+            .then(data => {
+
+                if(data.question_content === null){
+
+                }
+                $("#question_div").show();
+                $(".question_span").remove();
+                $(".answer_span").remove();
+                $(".question_image").remove();
+                $(".question_points").remove();
+                if(parseInt(time_to_answer) > 0){
+                    $("#next_question_button").remove();
+                    startTimer();
+                }
+
+
+                $("#question_content_place").append("<span class=\"question_span\">" + data.question_content + "</span>");
+                $("#points").append("<span class=\"question_points\">" + data.points + "pkt.</span>");
+                if (data.image_path !== "") {
+                    $("#image_place").append("<span class='question_image'><img src=\"" + data.image_path + "\" width=\"500px\" height=\"450px\" alt=\"obrazek\"></span>")
+                }
+
+                switch (data.test_type) {
+                    case "JW":
+                        data.answers.map(function (item, i) {
+                            $("#answers_place").append("<span class='answer_span'><li class=\"m-2 text-xl border rounded\"><input type=\"radio\" value=\"" + item + "\" name=\"answer\" class=\"m-4\">" + item + "</li></span>");
+                        })
+                        break;
+                    case "WW":
+                        data.answers.map(function (item, i) {
+                            $("#answers_place").append("<span class='answer_span'><li class=\"m-2 text-xl border rounded\"><input type=\"checkbox\" value=\"" + item + "\" name=\"answer\" class=\"m-4\">" + item + "</li></span>");
+                        })
+                        break;
+                    case "PF":
+                        $("#answers_place").append("<span class='answer_span'><li class=\"m-2 text-xl border rounded\"><input type=\"radio\" value=\"" + data.answers[0] + "\" name=\"answer\" class=\"m-4\">" + data.answers[0] + "</li></span>");
+                        $("#answers_place").append("<span class='answer_span'><li class=\"m-2 text-xl border rounded\"><input type=\"radio\" value=\"" + data.answers[1] + "\" name=\"answer\" class=\"m-4\">" + data.answers[1] + "</li></span>");
+                        break;
+                    case "PO":
+                        $("#answers_place").append("<span class='answer_span'><textarea rows=\"8\" name=\"answer\" class=\"text-3xl rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500\" placeholder=\"Odpowiedz\"></textarea></span>");
+                        break;
+                }
+            })
+
+
+    }
+
+
+    function saveAnswer() {
+        let formElement = document.getElementById("answer_form");
+        let data = new FormData(formElement);
+        data.append("question_id",questionid);
+        if(lastQ){
+            data.append("cheat_count",cheatCount);
+            fetch('/solve/end',{
+                method: 'POST',
+                processData: false,
+                body: data
+            }).then(data => {
+                window.location = "/solve/finish";
+            })
+        }else{
+        fetch('/solve/saveanswer', {
+            method: 'POST',
+            processData: false,
+            body: data,
+        })
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=> {
+        $("#question_div").hide();
+        $(".mainbutton").hide();
+    });
+
+    function startTimer(){
+        if(time_to_answer > 0){
+        $('.timer').circularCountDown({
+            delayToFadeIn: 500,
+            size: 250,
+            fontColor: '#fff',
+            colorCircle: 'black',
+            background: '#2ECC71',
+            reverseLoading: true,
+            duration: {
+                seconds: parseInt(time_to_answer)
+            },
+            beforeStart: function() {
+            },
+            end: function(countdown) {
+                countdown.destroy();
+                getNextQuestion();
+            }
+        });
+        }
+    }
+
+        document.addEventListener("visibilitychange", (event) => {
+            if (document.visibilityState != "visible") {
+                cheatCount++;
+            }
+        });
+
+</script>
+<body onload="getQuestion()" class="bg-slate-700">
+<form autocomplete="off" id="start_form">
+    <input type="hidden" name="test_id" th:value="${test_id}">
+    <input type="hidden" name="solver_id" th:value="${solver_id}">
+    <input type="hidden" name="time" th:value="${time}">
+</form>
+<div class="grid grid-cols-3 h-screen justify-center items-center">
+
+<!--    div timera>-->
+    <div class="flex flex-column text-center mx-auto my-auto">
+        <div class="text-center mb-auto">
+            <div class="timer text-center">
+            </div>
+        </div>
+    </div>
+
+<!--    div od pytan-->
+    <div class="items-center flex flex-column" id="main">
+        <div class="p-2 m-2 border-3 bg-white rounded-lg shadow-lg" id="question_div">
+            <form id="answer_form">
+            <div class="shadow-lg rounded m-4 py-4 px-4 border-3 bg-white">
+                <div class="m-2 font-medium text-3xl">
+                    <h3 class="text-left" id="question_content_place"></h3>
+                </div>
+                <p id="image_place">
+                    <span class="question_image">
+                    </span>
+                </p>
+                <hr>
+                    <input type="hidden" name="test_id" th:value="${test_id}">
+                    <input type="hidden" name="solver_id" th:value="${solver_id}">
+                    <div class="m-2 px-2 py-2">
+                        <ul class="list-none m-2 px-1 py-1 text-lg" id="answers_place">
+                        </ul>
+                    </div>
+                <div class="my-2">
+                <b><p id="points" class="text-gray-400"></p></b>
+                </div>
+            </div>
+            </form>
+        </div>
+
+
+
+
+
+        <div class="text-center" id="button_start">
+            <div class="flex flex-col h-screen justify-center items-center">
+                <div class="text-center py-2 px-2 mt-2 mb-6">
+                    <div class="bg-gray-800 mt-2 px-8 py-2 rounded-xl">
+                        <h2 class="text-white text-xl"> <span class="font-bold text-red my-4">Uwaga!</span> Od tego momentu każda próba opuszczenia karty przeglądarki skutkować będzie oznaczaniem jako próba oszustwa i będzie rejestrowane to przez system!</h2>
+                        <h2 class="text-white mt-4 font-bold text-lg">TEST</h2>
+                        <h2 class="text-white my-1  text-lg"><span th:text="${test_name}"></span></h2>
+                        <h2 class="text-white mt-4 font-bold text-lg">CZAS NA ROZWIĄZANIE</h2>
+                        <h2 class="text-white my-1  text-lg"><span th:text="${test_time}"></span>min.</h2>
+                        <h2 class="text-white mt-4 font-bold text-lg">CZAS NA ODPOWIEDŹ</h2>
+                        <h2 class="text-white my-1  text-lg"><span th:text="${time_to_answer}"></span>s.</h2>
+                        <h2 class="text-white mt-4 font-bold text-lg">PRÓG ZALICZENIA</h2>
+                        <h2 class="text-white my-1  text-lg"><span th:text="${pass_percent}"></span>%</h2>
+
+                        <div class="mt-4 mx-2">
+                            <hr>
+                        <button type="button" onclick="getNextQuestion()"
+                                class="m-6 p-6 bg-green-500 text-white font-medium text-xl leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out">
+                            Rozpocznij
+                        </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--div guzika-->
+<div class="flex flex-column mx-12 my-auto mainbutton">
+    <div class="text-center">
+        <button type="button" onclick="getNextQuestion()" id="next_question_button"
+                class="m-6 p-6 bg-green-500 text-white font-medium text-xl leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
+            Nastepne pytanie
+        </button>
+    </div>
+</div>
+
+
+</div>
+
+</body>
+</html>

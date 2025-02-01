@@ -1,0 +1,15 @@
+[{
+  "_id": {
+    "$oid": "64172733e94687404a083be5"
+  },
+  "test_day": {
+    "$date": {
+      "$numberLong": "1679239200000"
+    }
+  },
+  "test_name": "Matematyka",
+  "test_id": "64172733e94687404a083be4",
+  "owner": "641726eee94687404a083be3",
+  "checked": true,
+  "_class": "com.example.kacper.inzynierka.results.TestResult"
+}]

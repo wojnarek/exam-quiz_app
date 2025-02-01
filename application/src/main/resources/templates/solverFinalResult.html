@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Wyniki</title>
+
+  <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+  <script type="text/javascript" th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+  <style>
+    input[type='number']{
+      width: 45px;
+    }
+
+  </style>
+</head>
+<script>
+
+
+</script>
+<body>
+<div class="flex md:flex-row-reverse flex-wrap h-screen">
+  <div class="w-full md:w-3/4">
+    <div class="grid grid-cols-2 md:grid-cols-1 p-8">
+      <div class="flex justify-center">
+        <div class="block p-6 rounded-lg shadow-lg bg-white max-w-sm">
+          <h5 class="text-gray-900 text-xl leading-tight font-medium mb-2">Odpowiedzi użytkownika</h5>
+          <p class="text-base mb-4">
+            <span th:text="${frSolverDetails.email}"></span>
+          </p>
+          <p class="text-base mb-4">
+            <span th:text="${frSolverDetails.fullname}"></span>
+          </p>
+          <p class="text-base mb-4">
+            <span th:text="${frSolverDetails.test_day}"></span>
+          </p>
+          <p class="text-base mb-4">
+            <span th:text="${frSolverDetails.test_name}"></span>
+          </p>
+          <p class="text-base mb-4">Punkty:
+            <span th:text="${frSolverDetails.earned_points}"></span><b>/</b><span th:text="${frSolverDetails.max_points}"></span>
+          </p>
+          <p class="text-base mb-4">
+            <span th:text="${frSolverDetails.pass_percent}"></span>%
+          </p>
+          <p class="text-base mb-4">
+            <span th:text="${frSolverDetails.message}"></span>
+          </p>
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-1 p-8 max-w-full  justify-center">
+      <div class="block rounded-lg shadow bg-white max-w-sm text-center my-4 border  justify-center" th:each="frsq : ${frSolverQuestions}">
+        <div class="p-6">
+          <h5 class="text-gray-900 text-xl font-medium"><span th:text="${frsq.questions.question_content}"></span></h5>
+          <ul class="ml-4 mt-4" th:each="frsqqa : ${frsq.questions.answers}">
+            <li class="my-2" th:text="${frsqqa}"></li>
+          </ul>
+        </div>
+        <div class="px-6 border-t border-gray-300 text-gray-600">
+          <ul class="text-left ml-4 my-2">
+            <li class="font-semibold">Poprawne odpowiedzi: </li>
+            <ul class="ml-4 text-left my-4">
+              <div class="bg-green-200 border-2 rounded my-2" th:each="frsqqra : ${frsq.questions.right_answers}">
+                <li class="m-2" th:text="${frsqqra}">Poprawa odpowiedz</li>
+              </div>
+            </ul>
+          </ul>
+        </div>
+        <div class="px-6 border-t border-gray-300 text-gray-600">
+          <ul class="text-left ml-4 my-2">
+            <li class="font-semibold">Odpowiedzi uzytkownika: </li>
+            <ul class="ml-4 text-left my-4">
+              <div class="bg-gray-100 border-2 rounded my-2"  th:each="frsqua : ${frsq.user_answer}">
+                <li class="m-2" th:text="${frsqua}"></li>
+              </div>
+            </ul>
+          </ul>
+          <p>Punkty: <p><span th:text="${frsq.earn_points}"></span> <b>/</b> <span th:text="${frsq.questions.points}"></span> </p></li></p>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+
+
+
+  <div class="w-full md:w-1/4 bg-gray-400 text-center text-sky-50">
+    <div class="w-full h-full shadow-md bg-gray-800 sticky top-0">
+      <div class="pt-4 pb-2 px-6">
+        <div class="flex items-center mt-20 mb-20">
+          <div class="shrink-0">
+          </div>
+          <div class="grow ml-3">
+            <a href="/"><p class="text-4xl text-black-600"><span class="text-uppercase" sec:authentication="name"></span> panel.</p></a>
+          </div>
+        </div>
+      </div>
+      <ul class="relative px-1" id="accordion">
+        <li class="relative my-6" >
+          <a href="/results" class="text-lg">Wyniki</a>
+        </li>
+        <hr class="my-1 bg-sky-100">
+        <li class="relative my-6">
+          <a href="#" class="text-lg">Szukaj</a>
+        </li>
+        <hr class="my-1 bg-sky-100">
+      </ul>
+
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Not found test</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="text-center" id="button_start">
+    <div class="flex flex-col h-screen justify-center items-center">
+        <div class="text-center py-2 px-2 mt-2 mb-6">
+            <div class="bg-gray-800 mt-2 px-8 py-2 rounded-xl">
+                <div class="px-4 py-4 mx-2 my-2">
+                    <h2 class="text-rose-500 font-bold text-6xl">Błąd!</h2>
+                </div>
+                <div class="mx-2 my-2">
+                    <img class="mx-auto" src="data:image/png;base64,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">
+                </div>
+
+                <div class="px-4 py-4 mt-8 my-2">
+                    <h2 class="text-white  text-2xl">Test do którego próbujesz się dostać jest nieaktywny lub nie istnieje ☹!</h2>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

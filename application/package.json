@@ -1,0 +1,7 @@
+{
+  "name": "inzynierka",
+  "version": "1.0.0",
+  "dependencies": {
+    "tw-elements": "^1.0.0-alpha12"
+  }
+}

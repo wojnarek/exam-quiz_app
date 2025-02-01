@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj nowe pytanie</title>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/materialNotify.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/materialNotify.css}"/>
+</head>
+<script>
+    function uploadForm(e) {
+        let i_file = document.getElementById("file_" + e.form.id).files[0];
+        let formData = new FormData(e.form);
+        formData.append("file", i_file);
+
+        fetch('/q/add', {
+            method: 'POST',
+            processData: false,
+            body: formData,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                e.form.reset();
+                notify("Dodano pytanie!", 3, false);
+
+                switch (data.test_type) {
+
+                    case "WW":
+                        $("#finished_questions").append()
+                        break;
+
+                    case "JW":
+                        break;
+
+                    case "PF":
+                        break;
+
+                    case "PO":
+                        break;
+                }
+            });
+    }
+
+    function setValueRadio(e) {
+        let radio_input = $(e).closest("li").find('input:radio');
+        $(radio_input).attr("value", $(e).val());
+    }
+
+    function setValueCheckbox(e) {
+        let checkbox_input = $(e).closest("li").find('input:checkbox');
+        $(checkbox_input).attr("value", $(e).val());
+    }
+
+    function addInput(e) {
+        switch (e.id) {
+            case "button_jw":
+                $("#input_list_jw").append("<li class=\"mx-2 my-1\"><input type=\"text\" required name=\"answers\" onchange=\"setValueRadio(this)\"\n" +
+                    "                                                                     class=\"mx-2 shadow appearance-none border focus:outline-cyan-200 rounded py-2 px-3 leading-tight focus:outline-none\"\n" +
+                    "                                                                     placeholder=\"Odpowiedź\" size=40><input type=\"radio\"\n" +
+                    "                                                                                                            name=\"right_answers\"\n" +
+                    "                                                                                                            class=\"w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600\">\n" +
+                    "                                        </li>")
+                break;
+
+            case "button_ww":
+                $("#input_list_ww").append("<li class=\"mx-2 my-1\"><input type=\"text\" required name=\"answers\" onchange=\"setValueCheckbox(this)\"\n" +
+                    "                                                                     class=\"mx-2 shadow appearance-none border focus:outline-cyan-200 rounded py-2 px-3 leading-tight focus:outline-none\"\n" +
+                    "                                                                     placeholder=\"Odpowiedź\" size=40><input onclick=\"addPoints()\"\n" +
+                    "                                            type=\"checkbox\"\n" +
+                    "                                            name=\"right_answers\"\n" +
+                    "                                            class=\"w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600\">\n" +
+                    "                                        </li>")
+                break;
+        }
+    }
+
+    function displayJW() {
+        $("#JWdiv").show();
+        $("#WWdiv").hide();
+        $("#POdiv").hide();
+        $("#PFdiv").hide();
+    }
+
+    function displayWW() {
+        $("#JWdiv").hide();
+        $("#WWdiv").show();
+        $("#POdiv").hide();
+        $("#PFdiv").hide();
+    }
+
+    function displayPF() {
+        $("#JWdiv").hide();
+        $("#WWdiv").hide();
+        $("#POdiv").hide();
+        $("#PFdiv").show();
+    }
+
+    function displayPO() {
+        $("#JWdiv").hide();
+        $("#WWdiv").hide();
+        $("#POdiv").show();
+        $("#PFdiv").hide();
+    }
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        $("#JWdiv").hide();
+        $("#WWdiv").hide();
+        $("#POdiv").hide();
+        $("#PFdiv").hide();
+    });
+
+    function addPoints() {
+        $("#pointsWW").get(0).value++;
+    }
+
+</script>
+
+
+<body>
+<div class="flex md:flex-row-reverse flex-wrap h-screen">
+    <div class="w-full  md:w-3/4 text-center">
+        <div class="grid grid-cols-1">
+            <div id="accordion" class="mt-10 mx-10 px-2 py-2 text-center">
+                <!--                    PYTANIE OTWARTE JEDNOKROTNEGO WYBORU-->
+                <h1 class="font-bold mx-6 text-blue-500 text-2xl my-1 mx-1">
+                    <button onclick="displayJW()"
+                            class="text-xl bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+                        Pytanie zamkniete jednokrotnego wyboru
+                    </button>
+                </h1>
+                <div id="JWdiv" class="mt-2 mb-6 justify-center">
+                    <div class="block rounded-lg shadow-sm bg-white border-2 ">
+                        <div class="py-3 px-6 border-b border-gray-300 text-left">
+                            <h2 class="font-bold text-lg">Pytanie otwarte jednokrotnego wyboru</h2>
+                        </div>
+                        <form id="JW" autocomplete="off">
+                            <input type="hidden" name="test_type" th:value="JW">
+                            <div class="p-6 border-b border-gray-300 text-left">
+                                <h5 class="text-gray-900 text-xl font-medium mb-2">
+                                    <input required size=60 name="question_content"
+                                           class="focus:outline-cyan-400 shadow appearance-none border focus:border-blue rounded w-full py-2 px-3 leading-tight focus:outline-none"
+                                           type="text" placeholder="Tresc pytania"></h5>
+                                <ul class="text-gray-700 text-base mb-4" id="input_list_jw">
+                                    <li class="mx-2 my-1"><input type="text" required name="answers"
+                                                                 onchange="setValueRadio(this)"
+                                                                 class="mx-2 shadow appearance-none border focus:outline-cyan-200 rounded py-2 px-3 leading-tight focus:outline-none"
+                                                                 placeholder="Odpowiedź" size=40><input type="radio"
+                                                                                                        name="right_answers"
+                                                                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </li>
+
+                                </ul>
+                                <button type="button" onclick="addInput(this)" id="button_jw"
+                                        class="mx-3 text-white bg-green-700 hover:scale-125 duration-150 focus:outline-none rounded-full text-sm p-2.5 text-center inline-flex items-center mr-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         height="3px" with="3px" stroke-width="1.5" stroke="currentColor"
+                                         class="w-4 h-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M12 4.5v15m7.5-7.5h-15"/>
+                                    </svg>
+
+                                </button>
+                            </div>
+                            <div class="py-3 px-6 text-left my-4">
+                                <h2 class="my-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="50px" width="50px"
+                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                         class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+                                    </svg>
+                                </h2>
+                                <input id="file_JW" type="file" name="fileupload"
+                                       accept="image/png, image/gif, image/jpeg"
+                                       class=" border border-solid border-gray-300 rounded"/>
+                            </div>
+                            <div class="py-3 px-6 text-left  border-t border-gray-300">
+                                <h2 class="my-2 font-semibold text-xl">
+                                    Punkty do zdobycia:
+                                </h2>
+                                <input type="number" name="points" min="1" value="1" size="2"
+                                       class=" border border-solid border-gray-300 rounded text-2xl mx-2 my-2 text-center"/>
+                            </div>
+                            <div class="py-3 px-6 border-t border-gray-300 text-gray-600 text-center">
+                                <button type="reset"
+                                        class="font-bold border-2 border-red-600 rounded-xl px-3 py-2 text-red-800 cursor-pointer hover:bg-red-600 hover:text-white duration-150 mr-72">
+                                    Wyczyść
+                                </button>
+                                <button type="button" onclick="uploadForm(this)"
+                                        class="font-bold border-2 border-green-600 rounded-xl px-3 py-2 text-emerald-800 cursor-pointer hover:bg-green-600 hover:text-white duration-150">
+                                    Dodaj pytanie
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!--                    pytanie zamkniete wielkrotne-->
+                <h1 class="font-bold mx-6 text-blue-500 text-2xl my-1 mx-1">
+                    <button onclick="displayWW()"
+                            class="text-xl bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+                        Pytanie zamkniete wielokrotnego wyboru
+                    </button>
+                </h1>
+                <div id="WWdiv" class="mt-2 mb-6 justify-center">
+                    <div class="block rounded-lg shadow-sm bg-white border-2 ">
+                        <div class="py-3 px-6 border-b border-gray-300 text-left">
+                            <h2 class="font-bold text-lg">Pytanie zamknięte wielokrotnego wyboru</h2>
+                        </div>
+
+                        <form id="WW" autocomplete="off">
+                            <input type="hidden" name="test_type" th:value="WW">
+                            <div class="p-6 border-b border-gray-300 text-left">
+                                <h5 class="text-gray-900 text-xl font-medium mb-2">
+                                    <input required size=60 name="question_content"
+                                           class="focus:outline-cyan-400 shadow appearance-none border focus:border-blue rounded w-full py-2 px-3 leading-tight focus:outline-none"
+                                           type="text" placeholder="Tresc pytania"></h5>
+                                <ul class="text-gray-700 text-base mb-4" id="input_list_ww">
+                                    <li class="mx-2 my-1"><input type="text" required name="answers"
+                                                                 onchange="setValueCheckbox(this)"
+                                                                 class="mx-2 shadow appearance-none border focus:outline-cyan-200 rounded py-2 px-3 leading-tight focus:outline-none"
+                                                                 placeholder="Odpowiedź" size=40><input
+                                            onclick="addPoints()"
+                                            type="checkbox"
+                                            name="right_answers"
+                                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </li>
+
+                                </ul>
+                                <button type="button" onclick="addInput(this)" id="button_ww"
+                                        class="mx-3 text-white bg-green-700 hover:scale-125 duration-150 focus:outline-none rounded-full text-sm p-2.5 text-center inline-flex items-center mr-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         height="3px" with="3px" stroke-width="1.5" stroke="currentColor"
+                                         class="w-4 h-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M12 4.5v15m7.5-7.5h-15"/>
+                                    </svg>
+
+                                </button>
+                            </div>
+                            <div class="py-3 px-6 text-left">
+                                <h2 class="my-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="50px" width="50px"
+                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                         class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+                                    </svg>
+                                </h2>
+                                <input id="file_WW" type="file" name="fileupload"
+                                       accept="image/png, image/gif, image/jpeg"
+                                       class=" border border-solid border-gray-300 rounded"/>
+                            </div>
+                            <div class="py-3 px-6 text-left  border-t border-gray-300">
+                                <h2 class="my-2 font-semibold text-xl">
+                                    Punkty do zdobycia:
+                                </h2>
+                                <input type="number" name="points" min="1" value="0" size="2" id="pointsWW"
+                                       class=" border border-solid border-gray-300 rounded text-2xl mx-2 my-2 text-center"/>
+                            </div>
+                            <div class="py-3 px-6 border-t border-gray-300 text-gray-600 text-center">
+                                <button type="reset"
+                                        class="font-bold border-2 border-red-600 rounded-xl px-3 py-2 text-red-800 cursor-pointer hover:bg-red-600 hover:text-white duration-150 mr-72">
+                                    Wyczyść
+                                </button>
+                                <button type="button" onclick="uploadForm(this)"
+                                        class="font-bold border-2 border-green-600 rounded-xl px-3 py-2 text-emerald-800 cursor-pointer hover:bg-green-600 hover:text-white duration-150">
+                                    Dodaj pytanie
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!--                    PYTANIE PRAWDA FALSZ-->
+                <h1 class="font-bold mx-6 text-blue-500 text-2xl my-1 mx-1">
+                    <button onclick="displayPF()"
+                            class="text-xl bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+                        Pytanie prawda / fałsz
+                    </button>
+                </h1>
+                <div id="PFdiv" class="mt-2 mb-6">
+                    <div class="block rounded-lg shadow-sm bg-white border-2">
+                        <div class="py-3 px-6 border-b border-gray-300 text-left">
+                            <h2 class="font-bold text-lg">Pytanie prawda / fałsz</h2>
+                        </div>
+                        <form id="PF" autocomplete="off">
+                            <input type="hidden" name="test_type" th:value="PF">
+                            <div class="p-6 border-b border-gray-300 text-left">
+                                <h5 class="text-gray-900 text-xl font-medium mb-2">
+                                    <input required size=60 name="question_content"
+                                           class="focus:outline-cyan-400 shadow appearance-none border focus:border-blue rounded w-full py-2 px-3 leading-tight focus:outline-none"
+                                           type="text" placeholder="Tresc pytania"></h5>
+                                <ul class="text-gray-700 text-base mb-4">
+                                    <li class="mx-2 my-1"><input type="text" required name="answers" readonly
+                                                                 value="Fałsz"
+                                                                 class="mx-2 shadow appearance-none border focus:outline-cyan-200 rounded py-2 px-3 leading-tight focus:outline-none"
+                                                                 placeholder="Odpowiedź" size=40><input type="radio"
+                                                                                                        name="right_answers"
+                                                                                                        value="Fałsz"
+                                                                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </li>
+                                    <li class="mx-2 my-1"><input type="text" required name="answers" readonly
+                                                                 value="Prawda"
+                                                                 class="mx-2 shadow appearance-none border focus:outline-cyan-200 rounded py-2 px-3 leading-tight focus:outline-none"
+                                                                 placeholder="Odpowiedź" size=40><input type="radio"
+                                                                                                        value="Prawda"
+                                                                                                        name="right_answers"
+                                                                                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="py-3 px-6 text-left">
+                                <h2 class="my-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="50px" width="50px"
+                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                         class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+                                    </svg>
+                                </h2>
+                                <input id="file_PF" type="file" name="fileupload"
+                                       accept="image/png, image/gif, image/jpeg"
+                                       class="border border-solid border-gray-300 rounded"/>
+                            </div>
+                            <div class="py-3 px-6 text-left  border-t border-gray-300">
+                                <h2 class="my-2 font-semibold text-xl">
+                                    Punkty do zdobycia:
+                                </h2>
+                                <input type="number" name="points" min="1" value="1" size="2"
+                                       class=" border border-solid border-gray-300 rounded text-2xl mx-2 my-2 text-center"/>
+                            </div>
+                            <div class="py-3 px-6 border-t border-gray-300 text-gray-600 text-center">
+                                <button type="reset"
+                                        class="font-bold border-2 border-red-600 rounded-xl px-3 py-2 text-red-800 cursor-pointer hover:bg-red-600 hover:text-white duration-150 mr-72">
+                                    Wyczyść
+                                </button>
+                                <button type="button" onclick="uploadForm(this)"
+                                        class="font-bold border-2 border-green-600 rounded-xl px-3 py-2 text-emerald-800 cursor-pointer hover:bg-green-600 hover:text-white duration-150">
+                                    Dodaj pytanie
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!--                    pytanie otwarte-->
+                <h1 class="font-bold mx-6 text-blue-500 text-2xl my-1 mx-1">
+                    <button onclick="displayPO()"
+                            class="text-xl bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+                        Pytanie otwarte
+                    </button>
+                </h1>
+                <div id="POdiv" class="mt-2 mb-6">
+                    <div class="block rounded-lg shadow-sm bg-white border-2">
+                        <div class="py-3 px-6 border-b border-gray-300 text-left">
+                            <h2 class="font-bold text-lg">Pytanie otwarte</h2>
+                        </div>
+                        <form id="PO" autocomplete="off">
+                            <input type="hidden" name="test_type" th:value="PO">
+                            <div class="p-6 border-b border-gray-300 text-left">
+                                <h5 class="text-gray-900 text-xl font-medium mb-2">
+                                        <textarea required size=60 name="question_content"
+                                                  class="focus:outline-cyan-400 shadow appearance-none border focus:border-blue rounded w-full py-2 px-3 leading-tight focus:outline-none"
+                                                  type="text" placeholder="Tresc pytania.."></textarea></h5>
+                            </div>
+                            <div class="py-3 px-6 text-left">
+                                <h2 class="my-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="50px" width="50px"
+                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                         class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
+                                    </svg>
+                                </h2>
+                                <input id="file_PO" type="file" name="fileupload"
+                                       accept="image/png, image/gif, image/jpeg"
+                                       class="border border-solid border-gray-300 rounded"/>
+                            </div>
+                            <div class="py-3 px-6 text-left  border-t border-gray-300">
+                                <h2 class="my-2 font-semibold text-xl">
+                                    Punkty do zdobycia:
+                                </h2>
+                                <input type="number" name="points" min="1" value="1" size="2"
+                                       class=" border border-solid border-gray-300 rounded text-2xl mx-2 my-2 text-center"/>
+                            </div>
+                            <div class="py-3 px-6 border-t border-gray-300 text-gray-600 text-center">
+                                <button type="reset"
+                                        class="font-bold border-2 border-red-600 rounded-xl px-3 py-2 text-red-800 cursor-pointer hover:bg-red-600 hover:text-white duration-150 mr-72">
+                                    Wyczyść
+                                </button>
+                                <button type="button" onclick="uploadForm(this)"
+                                        class="font-bold border-2 border-green-600 rounded-xl px-3 py-2 text-emerald-800 cursor-pointer hover:bg-green-600 hover:text-white duration-150">
+                                    Dodaj pytanie
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <div class="w-full md:w-1/4 bg-gray-400 text-center text-sky-50">
+        <div class="w-full h-full shadow-md bg-gray-800 sticky top-0">
+
+
+            <div class="pt-4 pb-2 px-6">
+                <div class="flex items-center mt-20 mb-20">
+                    <div class="shrink-0">
+                    </div>
+                    <div class="grow ml-3">
+                        <a href="/"><p class="text-4xl text-black-600"><span class="text-uppercase"
+                                                                             sec:authentication="name"></span> panel.
+                        </p></a>
+                    </div>
+                </div>
+            </div>
+            <ul class="relative px-1">
+                <li class="relative my-6 font-semibold text-2xl">
+                    ZARZADZAJ PYTANIAMI
+                </li>
+
+                <hr class="my-1 bg-sky-100">
+                <a href="/questions" class="text-lg">
+                    <li class="relative my-6">
+                        Powrót
+                    </li>
+                </a>
+                <hr class="my-1 bg-sky-100">
+                <li class="relative my-6">
+                    <a href="#" class="text-lg">Wyszukaj</a>
+                </li>
+                <hr class="my-1 bg-sky-100">
+            </ul>
+
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

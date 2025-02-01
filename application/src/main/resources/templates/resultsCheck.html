@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Wyniki</title>
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <script type="text/javascript" th:src="@{/js/waitMe.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/waitMe.css}"/>
+</head>
+<script>
+
+
+    function sendFinalResults(){
+        $('#main').waitMe({
+            effect: 'bounce',
+            text: '',
+            bg: 'rgba(255,255,255,0.7)',
+            color: '#000',
+            maxSize: '',
+            waitTime: -1,
+            textPos: 'horizontal',
+            fontSize: '',
+            source: '',
+            onClose: function() {}
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let data = new FormData();
+        data.append("test_id",urlParams.get("test_id"));
+        data.append("test_day",urlParams.get("test_day"));
+        fetch('/results/sendemails',{
+            method: 'POST',
+            processData: false,
+            body: data
+        }).then(response => {
+
+            console.log(response);
+
+            if(response.ok){
+                window.location = "/results";
+            }else {
+                alert("blad");
+            }
+        })
+
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=> {
+        const urlParams = new URLSearchParams(window.location.search);
+        let data = new FormData();
+        data.append("test_id",urlParams.get("test_id"));
+        data.append("test_day",urlParams.get("test_day"));
+        fetch('/results/checkstatus',{
+            method: 'POST',
+            processData: false,
+            body: data,
+        }).then(response => {
+            if(response.ok){
+             $("#finalResultButton").removeClass("bg-gray-100 border-gray-300");
+             $("#finalResultButton").addClass("bg-green-500 text-white rounded-md transition duration-500 ease select-none hover:bg-green-600");
+             $("#finalResultButton").removeAttr("disabled");
+             $("#helpTextFinalResultButton").remove();
+            }
+        })
+    });
+
+
+</script>
+<body id="main">
+<div class="flex md:flex-row-reverse flex-wrap h-screen">
+    <div class="w-full md:w-3/4">
+        <div class="mx-4 my-4 px-2 py-2">
+            <div class="mx-2 my-2">
+                <button type="button" onclick="sendFinalResults()" disabled id="finalResultButton"
+                        class="text-4xl bg-gray-100 font-light border px-4 py-2 m-2 border-gray-300 focus:outline-none focus:shadow-outline rounded-md">
+                    Wyślij wyniki
+                </button> <span id="helpTextFinalResultButton" class="text-xl "> - opcja ta będzie aktywna, gdy sprawdzone zostaną wszystkie wyniki. </span>
+            </div>
+        </div>
+
+
+        <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="py-3 px-6">
+                        Imie i nazwisko
+                    </th>
+                    <th scope="col" class="py-3 px-6">
+                        Email
+                    </th>
+                    <th scope="col" class="py-3 px-6">
+                        Liczba prób oszukiwania
+                    </th>
+                    <th scope="col" class="py-3 px-6">
+                        Sprawdzony
+                    </th>
+                    <th scope="col" class="py-3 px-6">
+                        Akcja
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700" th:each="solver : ${solvers}">
+                    <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        <span th:text="${solver.fullname}"></span>
+                    </th>
+                    <td class="py-4 px-6">
+                        <span th:text="${solver.email}"></span>
+                    </td>
+                    <td class="py-4 px-6">
+                        <span th:text="${solver.cheating}"></span>
+                    </td>
+                    <td class="py-4 px-6">
+                        <div th:switch="${solver.checked}">
+                            <span th:case="false">❌</span>
+                            <span th:case="true">✔</span>
+                        </div>
+                     </td>
+                    <td class="py-4 px-6">
+                        <div th:switch="${solver.checked}">
+                        <a th:case="false" th:href="@{'/results/solvers/' + ${solver.getId()}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Sprawdz wyniki</a>
+                        <a th:case="true" th:href="@{'/results/solvers/' + ${solver.getId()}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Zobacz wyniki</a>
+                        </div>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+
+
+
+
+    <div class="w-full md:w-1/4 bg-gray-400 text-center text-sky-50">
+        <div class="w-full h-full shadow-md bg-gray-800 sticky top-0">
+            <div class="pt-4 pb-2 px-6">
+                <div class="flex items-center mt-20 mb-20">
+                    <div class="shrink-0">
+                    </div>
+                    <div class="grow ml-3">
+                        <p class="text-4xl text-black-600">Wyniki z testu</p>
+                    </div>
+                </div>
+            </div>
+            <ul class="relative px-1" id="accordion">
+                <li class="relative my-6" >
+                    <a href="/results" class="text-lg">Wyniki</a>
+                </li>
+                <hr class="my-1 bg-sky-100">
+            </ul>
+
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

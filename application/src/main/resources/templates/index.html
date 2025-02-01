@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Strona użytkownika</title>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+
+<body>
+
+<div class="flex md:flex-row-reverse flex-wrap h-screen">
+    <div class="w-full md:w-3/4 text-center ">
+
+<!--        OSTATNIE WYNIKI-->
+
+        <div class="flex w-full border shadow-lg rounded mx-2 mt-20 px-2 py-2">
+            <ul>
+                <li>
+                    <div class="mx-2 my-2 justify-start">
+                        <h3 class="text-2xl text-blue-500 font-bold">Twoje ostatnie wyniki</h3>
+                    </div>
+                    <hr class="mx-2 my-2">
+                </li>
+                <li>
+                    <ul >
+                        <li class="inline-block" th:each="tr : ${testresults}">
+                            <div class="mx-2 my-2">
+                                <div class="border-2 rounded justify-end px-1 py-1">
+                                    <p class="text-lg px-1 py-1"><span th:text="${tr.test_name}"></span></p>
+                                    <p class="text-lg px-1 py-1"><span th:text="${tr.test_day}"></span></p>
+                                    <p>
+                                    <form method="get" th:action="@{/results/solvers}" th:method="get">
+                                        <input type="hidden" th:value="${tr.test_id}" name="test_id">
+                                        <input type="hidden" th:value="${tr.test_day}" name="test_day">
+                                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-2 my-2 rounded">Przejdź</button>
+                                    </form>
+
+
+
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+<!--        OSTATNIE TESTY-->
+
+        <div class="flex w-full border shadow-lg rounded mx-2 mt-20 px-2 py-2">
+            <ul>
+                <li>
+            <div class="mx-2 my-2 justify-start">
+                <h3 class="text-2xl text-blue-500 font-bold">Twoje ostatnie tety</h3>
+            </div>
+            <hr class="mx-2 my-2">
+                </li>
+                <li>
+            <ul >
+              <li class="inline-block" th:each="t : ${tests}">
+                  <div class="mx-2 my-2">
+                      <div class="border-2 rounded justify-end">
+                          <p class="text-lg px-1 py-1 text-dark"><span th:text="${t.name}"></span></p>
+                          <p class="text-dark">
+                              <a th:href="@{'/tests/manage/' + ${t.id}}">
+                              <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 mx-2 my-2 rounded">Przejdź</button>
+                                </a>
+                          </p>
+                      </div>
+                  </div>
+              </li>
+
+            </ul>
+                </li>
+            </ul>
+        </div>
+
+<!--        OSTATNIE PYTANIA-->
+
+        <div class="flex w-full border shadow-lg rounded mx-2 mt-20 px-2 py-2">
+            <ul>
+                <li>
+                    <div class="mx-2 my-2 justify-start">
+                        <h3 class="text-2xl text-blue-500 font-bold">Twoje ostatnie pytania</h3>
+                    </div>
+                    <hr class="mx-2 my-2">
+                </li>
+                <li>
+                    <ul >
+                        <li class="inline-block" th:each="q : ${questions}">
+                            <div class="mx-2 my-2">
+                                <div class="border-2 rounded justify-end">
+                                    <p class="text-lg px-1 py-1 text-dark"><span th:text="${q.question_content}"></span></p>
+                                    <p class="text-dark">
+                                        <a th:href="@{'/questions/manage/' + ${q.id}}">
+                                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 mx-2 my-2 rounded">Przejdź</button>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+
+
+
+    </div>
+
+
+    <div class="w-full md:w-1/4 text-center text-sky-50">
+        <div class="w-full h-full shadow-md bg-gray-800 sticky top-0">
+
+
+            <div class="pt-4 pb-2 px-6">
+                <div class="flex items-center mt-20 mb-20">
+                    <div class="shrink-0">
+                    </div>
+                    <div class="grow ml-3">
+                        <p class="text-4xl text-black-600"><span class="text-uppercase"
+                                                                 sec:authentication="name"></span> panel.</p>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="relative px-1">
+                <a href="/tests">
+                    <li class="relative my-6 items-start py-6">
+                        <h1 class="font-bold text-2xl">
+                            Testy
+                        </h1>
+                    </li>
+                </a>
+                <hr class="my-1 bg-sky-100">
+
+                <a href="/questions">
+                    <li class="relative my-6 items-start py-6">
+                        <h1 class="font-bold text-2xl">
+                            Pytania
+                        </h1>
+                    </li>
+                </a>
+                <hr class="my-1 bg-sky-100">
+
+                <a href="/results">
+                    <li class="relative my-6 items-start py-6">
+                        <h1 class="font-bold text-2xl">
+                            Wyniki
+                        </h1>
+                    </li>
+                </a>
+                <hr class="my-1 bg-sky-100">
+
+
+            </ul>
+
+
+        </div>
+
+    </div>
+</div>
+
+
+</body>
+</html>

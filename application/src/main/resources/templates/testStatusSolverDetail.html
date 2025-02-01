@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+
+<script>
+
+
+
+</script>
+
+<body>
+<div class="flex flex-col h-screen justify-center items-center">
+    <div class="text-center py-2 px-2">
+        <form autocomplete="off" th:method="post" th:action="@{/solve}" class="bg-gray-800 mt-6 px-8 py-2 rounded-xl">
+            <input type="hidden" th:value="${testcode}" id="code" name="id">
+            <div class="px-2 py-2">
+                <div class="mb-4">
+                    <p><input type="email" placeholder="Email" name="email" required class="text-2xl my-4 mx-2 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></p>
+                    <p><input type="text" placeholder="Imie i nazwisko" required name="data" class="text-2xl my-4 mx-2 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></p>
+                </div>
+            </div>
+                <button type="submit" class="mb-4 bg-grey-lighter border rounded border-white px-6 py-4 text-xl text-white hover:bg-green-500 hover:border-green duration-200">
+                    Przejdź do testu</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

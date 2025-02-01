@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta charset="UTF-8">
+    <title>Nowy test</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+
+</head>
+<style>
+
+    .text-center {
+        text-align: center !important;
+    }
+</style>
+
+<body>
+<div class="flex md:flex-row-reverse flex-wrap h-screen">
+    <div class="w-full  md:w-3/4 text-center text-gray-200">
+        <div class="flex justify-center">
+            <form th:method="post" th:action="@{/tests/add}" th:object="${test}" autocomplete="off" class="bg-gray-800 mt-6 px-8 py-2 rounded-xl">
+                <div class="px-2 py-2">
+                    <div class="mb-4">
+                        <label class="block text-sky-100 text-sm font-bold mb-2" >
+                            Nazwa testu
+                        </label>
+                        <input type="text" required name="testname" th:field="*{name}" placeholder="Nazwa testu" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sky-100 text-sm font-bold mb-2" >
+                            Krótki opis
+                        </label>
+                        <textarea th:field="*{description}" required name="testdesc" placeholder="Krótki opis.." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" ></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sky-100 text-sm font-bold mb-2" >
+                            Kategoria
+                        </label>
+                        <input type="text" name="testcategory" required th:field="*{category}" placeholder="Kategoria" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" >
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sky-100 text-sm font-bold mb-2" >
+                            Procent zdawalności
+                        </label>
+                        <input type="number" min="0" max="100" required name="testpasspercent" placeholder="Procent zdawalnosci" autocomplete="off" th:value="50" th:field="*{pass_percent}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sky-100 text-sm font-bold mb-2" >
+                            Data rozpoczęcia
+                        </label>
+                        <input type="datetime-local" name="testdatestart" required th:field="*{start_date}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sky-100 text-sm font-bold mb-2" >
+                            Data zakończenia
+                        </label>
+                        <input type="datetime-local" name="testdateend" required th:field="*{end_date}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sky-100 text-sm font-bold" required >
+                            Czas na udzielenie odpowiedzi (s)
+                        </label>
+                        <label class="block text-sky-100 text-sm font-bold mb-2" >
+                            ustawiony na zero powoduje, że czas na odpowiedź będzie nie ograniczony
+                        </label>
+                        <input type="number" value="0" name="testtimeforanswer" required th:field="*{time_for_answer}" placeholder="Czas na odpowiedź" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <div class="mb-4">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Dodaj nowy test
+                        </button>
+                    </div>
+                </div>
+
+
+
+
+            </form>
+
+
+
+
+
+        </div>
+    </div>
+
+
+
+
+    <div class="w-full md:w-1/4 bg-gray-400 text-center text-sky-50">
+        <div class="w-full h-full shadow-md bg-gray-800 sticky top-0">
+            <div class="pt-4 pb-2 px-6">
+                <div class="flex items-center mt-20 mb-20">
+                    <div class="shrink-0">
+                    </div>
+                    <div class="grow ml-3">
+                        <a href="/"><p class="text-4xl text-black-600"><span>Tworzenie nowego testu</span> </p></a>
+                    </div>
+                </div>
+            </div>
+            <ul class="relative px-1" id="accordion">
+                <li class="relative my-6 font-semibold text-2xl" >
+                    ZARZADZAJ TESTAMI
+                </li>
+
+                <hr class="my-1 bg-sky-100">
+                <a href="/tests" class="text-lg">
+                    <li class="relative my-6">
+                        Powrót
+                    </li>
+                </a>
+            </ul>
+
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
+<!--                <div class="col-3 mx-3 d-flex align-items-stretch" th:each="test : ${tests}">-->
+<!--                    <div class="card border-0 shadow pt-5 my-5 position-relative d-flex align-items-stretch">-->
+<!--                        <div class="card-body d-flex flex-column">-->
+<!--                            <div class="card-text">-->
+<!--                                <h3 class="member-name mb-3 text-center text-primary font-weight-bold"><span th:text="${test.name}"></span></h3>-->
+<!--                                <h5 class="mb-3 mt-2 text-center">-->
+<!--                                    <img th:src="@{/img/start_date_icon.png}" />-->
+<!--                                    <span class="font-weight-bold" th:text="${test.start_date}">14-05-2022T14;00</span> </h5>-->
+<!--                                <h5 class="mb-3 mt-2 text-center">-->
+<!--                                    <img th:src="@{/img/end_date_time.png}" />-->
+<!--                                    <span class="font-weight-bold" th:text="${test.end_date}">14-05-2022T16;00</span></h5>-->
+<!--                                <div class="mb-3"><span th:text="${test.description}"></span></div>-->
+<!--                            </div>&lt;!&ndash;//card-body&ndash;&gt;-->
+<!--                            <div class="card-footer theme-bg-primary border-0 text-center mt-auto">-->
+<!--                                <ul class="social-list list-inline mb-0 mx-auto">-->
+<!--                                                                 <li class="list-inline-item"><a th:href="@{'/tests/manage/' + ${test.id}}">-->
+<!--                                    <button class="btn btn-success btn-sm rounded-4 shadow-sm" type="button" data-toggle="tooltip"-->
+<!--                                            data-placement="top" title="Edit"><img th:src="@{/img/edit_icon.png}"></button></a> </li>-->
+
+<!--                                </ul>&lt;!&ndash;//social-list&ndash;&gt;-->
+<!--                            </div>&lt;!&ndash;//card-footer&ndash;&gt;-->
+<!--                        </div>&lt;!&ndash;//card&ndash;&gt;-->
+
+<!--                    </div>-->
+<!--                </div>-->
+
+
+

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/materialNotify.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/materialNotify.css}"/>
+
+</head>
+<style>
+
+    .pt-5 {
+        padding-top: 3rem !important;
+    }
+
+    .my-5 {
+        margin-top: 3rem !important;
+        margin-bottom: 3rem !important;
+    }
+
+    .border-0 {
+        border: 0 !important;
+    }
+
+    .position-relative {
+        position: relative !important;
+    }
+
+    .shadow-lg {
+        box-shadow: 0 1rem 3rem rgb(0 0 0 / 18%) !important;
+    }
+
+    .card {
+        position: relative;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        border-radius: .25rem;
+    }
+
+    .text-center {
+        text-align: center !important;
+    }
+
+    .mx-auto {
+        margin-right: auto !important;
+        margin-left: auto !important;
+    }
+
+</style>
+<script>
+
+    function showDelete(){
+        $(".deletebutton").css("display","block");
+    }
+
+    function find(e){
+        let formData = new FormData(e.form);
+
+        console.log(formData.get("to_search"));
+
+        fetch('/tests/find',{
+            processData: false,
+            method: 'POST',
+            body: formData,
+        }).then(response => response.json())
+            .then(data => {
+                if(data.length === 0){
+                    notify("Brak wyników!",1, true);
+                }else {
+                    $("#grid_div").empty()
+
+                    $.each(data, function (item, i) {
+                        $("#grid_div").append("<div name=\"glownydiv\" class=\"p-4 w-full max-w-sm bg-white rounded-lg border text-black shadow-md sm:p-6 dark:bg-gray-800 dark:border-gray-700 mx-10 my-20 flex flex-column\" th:each=\"test : ${tests}\">\n" +
+                            "                <h5 class=\"text-center\">\n" +
+                            "                    <span class=\"text-center font-bold mb-10 text-4xl text-stone-700\" >"+i.name+"</span>\n" +
+                            "                </h5>\n" +
+                            "\n" +
+                            "                <ul class=\"my-4 space-y-3 tex\">\n" +
+                            "                    <li class=\"text-xl font-bold\">\n" +
+                            "                        <img src=\"/img/start_date_icon.png\" class=\"content-center\" />\n" +
+                            "                        <span class=\"font-weight-bold\" >"+i.start_date+"</span>\n" +
+                            "                    </li >\n" +
+                            "\n" +
+                            "\n" +
+                            "                    <li class=\"text-xl font-bold mt-6\">\n" +
+                            "                        <img src=\"/img/end_date_time.png\" class=\"content-center\" />\n" +
+                            "                        <span class=\"font-weight-bold\">"+i.end_date+"</span>\n" +
+                            "\n" +
+                            "                    </li>\n" +
+                            "\n" +
+                            "                </ul>\n" +
+                            "\n" +
+                            "                <p class=\"break-words mb-10 \"><span>"+i.description+"</span></p>\n" +
+                            "\n" +
+                            "                <div class=\"flex-column flex mt-auto\">\n" +
+                            "                    <a href=\"/tests/manage/"+i.id+"\">\n" +
+                            "                    <button type=\"button\" class=\"text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800\"><img src=\"/img/edit_icon.png\"></button>\n" +
+                            "                    </a>\n" +
+                            "                </div>\n" +
+                            "\n" +
+                            "                <div class=\"flex-column flex mt-4 deletebutton\" style=\"display: none\">\n" +
+                            "                    <form method=\"post\" th:action=\"@{/tests/hide}\">\n" +
+                            "                        <input type=\"hidden\" name=\"test_id\" th:value=\""+i.test_id+"\">\n" +
+                            "                    <button type=\"submit\"\n" +
+                            "                                class=\"text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800\"><b>👁‍</b></button>\n" +
+                            "                    </form>\n" +
+                            "                </div>\n" +
+                            "            </div>")
+                    })
+
+                }
+
+
+            });
+
+
+
+    }
+
+</script>
+<body>
+<div class="flex md:flex-row-reverse flex-wrap h-screen">
+    <div class="w-full  md:w-3/4 text-center text-gray-200">
+        <div class="grid grid-cols-1 md:grid-cols-3" id="grid_div">
+
+            <div name="glownydiv" class="p-4 w-full max-w-sm bg-white rounded-lg border text-black shadow-md sm:p-6 dark:bg-gray-800 dark:border-gray-700 mx-10 my-20 flex flex-column" th:each="test : ${tests}">
+                <h5 class="text-center">
+                    <span class="text-center font-bold mb-10 text-4xl text-stone-700" th:text="${test.name}"></span>
+                </h5>
+
+                <ul class="my-4 space-y-3 tex">
+                    <li class="text-xl font-bold">
+                        <img th:src="@{/img/start_date_icon.png}" class="content-center" />
+                        <span class="font-weight-bold" th:text="${test.start_date}"></span>
+                    </li >
+
+
+                    <li class="text-xl font-bold mt-6">
+                        <img th:src="@{/img/end_date_time.png}" class="content-center" />
+                        <span class="font-weight-bold" th:text="${test.end_date}"></span>
+
+                    </li>
+
+                </ul>
+
+                <p class="break-words mb-10 "><span th:text="${test.description}"></span></p>
+
+                <div class="flex-column flex mt-auto">
+                    <a th:href="@{'/tests/manage/' + ${test.id}}">
+                    <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"><img th:src="@{/img/edit_icon.png}"></button>
+                    </a>
+                </div>
+
+                <div class="flex-column flex mt-4 deletebutton" style="display: none">
+                    <form method="post" th:action="@{/tests/hide}">
+                        <input type="hidden" name="test_id" th:value="${test.id}">
+                    <button type="submit"
+                                class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"><b>👁‍</b></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+
+
+    <div class="w-full md:w-1/4 bg-gray-400 text-center text-sky-50">
+        <div class="w-full h-full shadow-md bg-gray-800 sticky top-0">
+
+
+
+            <div class="pt-4 pb-2 px-6">
+                <div class="flex items-center mt-20 mb-20">
+                    <div class="shrink-0">
+                    </div>
+                    <div class="grow ml-3">
+                        <a href="/"><p class="text-4xl text-black-600"><span class="text-uppercase" >Twoje testy</span></p></a>
+                    </div>
+                </div>
+            </div>
+            <ul class="relative px-1" id="accordion">
+                <li class="relative my-6 font-semibold text-2xl" >
+                    ZARZADZAJ TESTAMI
+                </li>
+
+                <hr class="my-1 bg-sky-100">
+                <a href="/tests/new-test" class="text-lg">
+                <li class="relative my-6">
+                    Dodaj nowy
+                </li>
+                </a>
+
+                <hr class="my-1 bg-sky-100">
+                <button onclick="showDelete()" class="outline-none focus:outline-none active:outline-none">
+                <li class="relative my-6">
+                    Ukryj test
+                </li>
+                </button>
+
+                <hr class="my-1 bg-sky-100">
+                <li class="relative my-6">
+                    <div class="m-1 justify-center">
+                        <form class="justify-center" id="search_form" method="post" th:action="@{/tests/find}">
+                    <input type="text" name="to_search" placeholder="Wyszukaj.." class="outline-none border border-sky-200 bg-transparent rounded px-2 py-2 focus:border-sky-600 duration-150" >
+                            <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="find(this)">
+                                Szukaj
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                <hr class="my-1 bg-sky-100">
+            </ul>
+
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
+<!--                <div class="col-3 mx-3 d-flex align-items-stretch" th:each="test : ${tests}">-->
+<!--                    <div class="card border-0 shadow pt-5 my-5 position-relative d-flex align-items-stretch">-->
+<!--                        <div class="card-body d-flex flex-column">-->
+<!--                            <div class="card-text">-->
+<!--                                <h3 class="member-name mb-3 text-center text-primary font-weight-bold"><span th:text="${test.name}"></span></h3>-->
+<!--                                <h5 class="mb-3 mt-2 text-center">-->
+<!--                                    <img th:src="@{/img/start_date_icon.png}" />-->
+<!--                                    <span class="font-weight-bold" th:text="${test.start_date}">14-05-2022T14;00</span> </h5>-->
+<!--                                <h5 class="mb-3 mt-2 text-center">-->
+<!--                                    <img th:src="@{/img/end_date_time.png}" />-->
+<!--                                    <span class="font-weight-bold" th:text="${test.end_date}">14-05-2022T16;00</span></h5>-->
+<!--                                <div class="mb-3"><span th:text="${test.description}"></span></div>-->
+<!--                            </div>&lt;!&ndash;//card-body&ndash;&gt;-->
+<!--                            <div class="card-footer theme-bg-primary border-0 text-center mt-auto">-->
+<!--                                <ul class="social-list list-inline mb-0 mx-auto">-->
+<!--                                                                 <li class="list-inline-item"><a th:href="@{'/tests/manage/' + ${test.id}}">-->
+<!--                                    <button class="btn btn-success btn-sm rounded-4 shadow-sm" type="button" data-toggle="tooltip"-->
+<!--                                            data-placement="top" title="Edit"><img th:src="@{/img/edit_icon.png}"></button></a> </li>-->
+
+<!--                                </ul>&lt;!&ndash;//social-list&ndash;&gt;-->
+<!--                            </div>&lt;!&ndash;//card-footer&ndash;&gt;-->
+<!--                        </div>&lt;!&ndash;//card&ndash;&gt;-->
+
+<!--                    </div>-->
+<!--                </div>-->
+
+
+

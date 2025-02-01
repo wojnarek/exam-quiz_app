@@ -1,0 +1,17 @@
+[{
+  "_id": {
+    "$oid": "641726eee94687404a083be3"
+  },
+  "email": "tomasz@nowak.pl",
+  "password": "$2a$10$cN3yH35SbJhcaAeTHR89m.sTqKwh2EZof91/8PTFIuMBg0NDKxPMO",
+  "username": "Tomasz Nowak",
+  "roles": [
+    {
+      "$ref": "roles",
+      "$id": {
+        "$oid": "635582d29eb605823c9ef5ae"
+      }
+    }
+  ],
+  "_class": "com.example.kacper.inzynierka.user.User"
+}]

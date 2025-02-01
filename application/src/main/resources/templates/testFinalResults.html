@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Wyniki</title>
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+
+</head>
+<script>
+
+
+</script>
+<body>
+<div class="flex md:flex-row-reverse flex-wrap h-screen">
+    <div class="w-full md:w-3/4">
+        <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="py-3 px-6">
+                        Imie i nazwisko
+                    </th>
+                    <th scope="col" class="py-3 px-6">
+                        Email
+                    </th>
+                    <th scope="col" class="py-3 px-6">
+                        Akcja
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700" th:each="final : ${finalResults}">
+                    <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        <span th:text="${final.fullname}"></span>
+                    </th>
+                    <td class="py-4 px-6">
+                        <span th:text="${final.email}"></span>
+                    </td>
+                    <td class="py-4 px-6">
+                            <a th:href="@{'/finalresults/solverfinalresult/' + ${final.getId()}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Zobacz odpowiedzi</a>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+
+
+
+
+    <div class="w-full md:w-1/4 bg-gray-400 text-center text-sky-50">
+        <div class="w-full h-full shadow-md bg-gray-800 sticky top-0">
+            <div class="pt-4 pb-2 px-6">
+                <div class="flex items-center mt-20 mb-20">
+                    <div class="shrink-0">
+                    </div>
+                    <div class="grow ml-3">
+                        <a href="/"><p class="text-4xl text-black-600"><span class="text-uppercase" sec:authentication="name"></span> panel.</p></a>
+                    </div>
+                </div>
+            </div>
+            <ul class="relative px-1" id="accordion">
+                <li class="relative my-6" >
+                    <a href="/results" class="text-lg">Wyniki</a>
+                </li>
+                <hr class="my-1 bg-sky-100">
+                <li class="relative my-6">
+                    <a href="#" class="text-lg">Szukaj</a>
+                </li>
+                <hr class="my-1 bg-sky-100">
+            </ul>
+
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

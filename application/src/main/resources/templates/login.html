@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>test</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+  <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+  <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+</head>
+<body>
+<section class="vh-100 gradient-custom">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card bg-dark text-white" style="border-radius: 1rem;">
+          <div class="card-body p-5 text-center">
+
+            <div class="mb-md-5 mt-md-4 pb-5">
+
+              <h2 class="fw-bold mb-2 text-uppercase">Logowanie</h2>
+             <span><h3 class="text-success" th:text="${successmsg}"></h3></span>
+              <span><h3 class="text-danger" th:text="${errormsg}"></h3></span>
+
+<!--FORM LOGIN-->
+              <form th:action="@{/signin}" th:object="${user}" th:method="post" autocomplete="off" >
+              <div class="form-outline form-white mb-4">
+                <input type="text" th:field="*{email}" placeholder="Email" class="form-control form-control-lg" id="typeEmailX" required>
+                <label class="form-label" for="typeEmailX">Email</label>
+              </div>
+              <div class="form-outline form-white mb-4">
+                <input type="password" th:field="*{password}" placeholder="Hasło" class="form-control form-control-lg" id="typePasswordX" required>
+                <label class="form-label" for="typePasswordX">Hasło</label>
+              </div>
+              <button class="btn btn-outline-light btn-lg px-5" type="submit">Zaloguj</button>
+              </form>
+
+
+            </div>
+
+            <div>
+              <p class="mb-0">Nie masz konta? Zarejestruj się! <a href="/register" class="text-blue-50 fw-bold">Zarejestruj!</a>
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

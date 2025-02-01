@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/flowbite.min.css" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <title>Witaj</title>
+</head>
+<body>
+<div class="text-center" id="button_start">
+    <div class="flex flex-col h-screen justify-center items-center">
+        <div class="text-center py-2 px-2 mt-2 mb-6">
+            <div class="bg-gray-800 mt-2 px-8 py-2 rounded-xl">
+                <ul class="p-2 mb-12 whitespace-nowrap no-scrollbar overflow-x-scroll overflow-y-hidden">
+                    <li class="w-fit inline-block mx-1 p-3 px-8 "><h1
+                            class="text-4xl text-white font-bold">Jesteś już z nami? A więc..</h1>
+                        <a href="/login">
+                            <button class="text-3xl text-white px-2 py-2 mt-4 mx-2 bg-transparent border-white border-2 rounded duration-200 hover:rounded-xl hover:text-green-400">
+                                Zaloguj się!
+                            </button>
+                        </a>
+                    </li>
+                    <li class="w-fit inline-block mx-1 p-3 px-8"><h1
+                            class="text-4xl text-white font-bold">Nie posiadasz konta?</h1>
+                        <a href="/register">
+                            <button class="text-3xl text-white px-2 py-2 mt-4 mx-2 bg-transparent border-white border-2 rounded duration-200  hover:rounded-xl hover:text-teal-400">
+                                Zarejestruj się
+                            </button>
+                        </a></li>
+                </ul>
+
+            </div>
+        </div>
+
+        <div class="text-center py-2 px-2 mt-12 mb-6">
+            <div class="bg-gray-800 mt-2 px-8 py-2 rounded-xl">
+                <h1 class="text-4xl mx-2 my-2 px-2 py-2 text-sky-50">Co oferujemy?</h1>
+                <div id="indicators-carousel" class="relative" data-carousel="static">
+                    <!-- Carousel wrapper -->
+                    <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
+                        <!-- Item 1 -->
+                        <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
+                            oferta super rzecz 1
+                        </div>
+                        <!-- Item 2 -->
+                        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                            oferta super rzecz 2
+                        </div>
+                        <!-- Item 3 -->
+                        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                            oferta super rzecz 3
+                        </div>
+                    </div>
+                    <!-- Slider indicators -->
+                    <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
+                        <button type="button" class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
+                        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
+                        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
+                        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 4" data-carousel-slide-to="3"></button>
+                        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 5" data-carousel-slide-to="4"></button>
+                    </div>
+                    <!-- Slider controls -->
+                    <button type="button" class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+            <svg aria-hidden="true" class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            <span class="sr-only">Previous</span>
+        </span>
+                    </button>
+                    <button type="button" class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+            <svg aria-hidden="true" class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            <span class="sr-only">Next</span>
+        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

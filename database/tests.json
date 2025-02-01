@@ -1,0 +1,25 @@
+[{
+  "_id": {
+    "$oid": "64172733e94687404a083be4"
+  },
+  "owner": "641726eee94687404a083be3",
+  "name": "Matematyka",
+  "description": "Test z dodawania i odejmowania",
+  "category": "Proste działania",
+  "pass_percent": 55,
+  "start_date": {
+    "$date": {
+      "$numberLong": "1679239200000"
+    }
+  },
+  "end_date": {
+    "$date": {
+      "$numberLong": "1679239800000"
+    }
+  },
+  "test_code": "FtXH7vz",
+  "questions_count": 0,
+  "time_for_answer": 0,
+  "hide": false,
+  "_class": "com.example.kacper.inzynierka.test.Test"
+}]

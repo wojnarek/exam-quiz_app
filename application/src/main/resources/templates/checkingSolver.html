@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Wyniki</title>
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/materialNotify.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/materialNotify.css}"/>
+    <style>
+        input[type='number'] {
+            width: 45px;
+        }
+
+    </style>
+</head>
+<script>
+
+    let pointsAndquestions = new FormData();
+
+    function appendToForm(e) {
+        let form = document.getElementById(e.form.id);
+        let data = new FormData(form);
+        for (let [key, value] of data) {
+            console.log(key, value)
+            pointsAndquestions.append(key, value);
+        }
+        $(e).attr("disabled", true);
+        $(e).removeClass("checked bg-green-500 hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150");
+        $(e).addClass("disabled:opacity-25 bg-gray-400");
+        let allQuestionsCheck = $('.checked');
+        if (allQuestionsCheck.length === 0) {
+            $("#acceptResults").removeAttr("disabled");
+            $("#acceptResults").addClass("bg-green-500 hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150");
+        }
+    }
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+        let formsCollection = document.getElementsByClassName("closedq-form");
+
+        console.log(formsCollection);
+
+        for (let i = 0; i < formsCollection.length; i++) {
+            let data = new FormData(formsCollection[i]);
+            for (let [key, value] of data) {
+                console.log(key, value)
+                pointsAndquestions.append(key, value);
+            }
+        }
+        let allQuestionsCheck = $('.checked');
+        if (allQuestionsCheck.length === 0) {
+            $("#acceptResults").removeAttr("disabled");
+        }
+    });
+
+
+    function AcceptResults() {
+        let allPoints = $('.points_per_question').map((i, e) => e.value).get();
+        let maxPoints = 0;
+        for (let i = 0; i < allPoints.length; i++) {
+            maxPoints = +maxPoints + +allPoints[i];
+        }
+        pointsAndquestions.append("max_points", maxPoints);
+        pointsAndquestions.append("solver_id", document.getElementById("solver_id").value);
+        pointsAndquestions.append("fullname", document.getElementById("solver_fullname").value);
+        pointsAndquestions.append("email", document.getElementById("solver_email").value);
+        pointsAndquestions.append("message", document.getElementById("result_message").value);
+        pointsAndquestions.append("negative_points", document.getElementById("negative_points").value);
+
+        fetch('/results/savefinalresults', {
+            method: 'POST',
+            processData: false,
+            body: pointsAndquestions
+        }).then(() => {
+
+            notify("Wyniki zapisane!", 2, false);
+
+            window.history.back();
+        })
+    }
+
+
+</script>
+<body>
+<input type="hidden" id="solver_id" th:value="${s.id}">
+<input type="hidden" id="solver_fullname" th:value="${s.fullname}">
+<input type="hidden" id="solver_email" th:value="${s.email}">
+<div class="flex md:flex-row-reverse flex-wrap h-screen">
+    <div class="w-full md:w-3/4">
+        <div class="grid  md:grid-cols-1 p-8 inline">
+            <div class="mx-1 my-1 p-2.5 rounded shadow justify-center p-2">
+                <div class="inline-block mx-16">
+                    <button type="button" onclick="AcceptResults()" id="acceptResults" disabled
+                            title="Wyniki można zatwierdzić jeżeli wszystkie pytania są sprawdzone"
+                            class="text-xl border rounded text-black py-2 px-2 mx-2 my-2">Zatwierdź wyniki
+                    </button>
+                </div>
+                <div class="inline-block mx-16"><textarea name="message" rows="2" id="result_message" class="border px-2 py-2"
+                                                            placeholder="Wiadomość dla egzaminowanego"></textarea></div>
+                <div class="inline-block mx-16">
+                    <ul>
+                        <li><h5 class="font-bold text-xl mb-2">Odpowiedzi użytkownika <span
+                                th:text="${s.fullname}"></span></h5></li>
+                        <li>Adres email: <span class="font-semibold" th:text="${s.email}"></span></li>
+                        <li>Liczba prób oszukiwania: <span class="font-semibold" th:text="${s.cheating}"></span></li>
+                        <li>Sugerowana liczba punktów ujemnych: <input type="number" class="border px-1" id="negative_points" th:value="${s.cheating}" min="0"></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="mx-2 my-2">
+
+
+        <div class="grid grid-cols-1 md:grid-cols-1 p-8 w-full">
+            <div class="block rounded-lg shadow bg-white max-w-sm max-w-full border-2 text-center my-8 justify-center"
+                 th:each="r : ${resultlist}">
+                <div class="p-6">
+                    <h5 class="text-2xl font-bold"><span
+                            th:text="${r.questions.question_content}"></span></h5>
+                    <ul class="ml-4 mt-4" th:each="ra : ${r.questions.answers}">
+                        <li class="my-2 border-b text-xl" th:text="${ra}"></li>
+                    </ul>
+                </div>
+                <div class="px-6 border-t border-gray-300 text-gray-600">
+                    <ul class="text-left ml-4 my-2">
+                        <li class="font-semibold">Poprawne odpowiedzi:</li>
+                        <ul class="ml-4 text-left my-4">
+                            <div class="bg-green-200 border-2 rounded my-2"
+                                 th:each="rra : ${r.questions.right_answers}">
+                                <li class="m-2" th:text="${rra}">Poprawa odpowiedz</li>
+                            </div>
+                        </ul>
+                    </ul>
+                </div>
+                <div class="px-6 border-t border-gray-300 text-gray-600">
+                    <ul class="text-left ml-4 my-2">
+                        <li class="font-semibold">Odpowiedzi uzytkownika:</li>
+                        <ul class="ml-4 text-left my-4">
+                            <div class="bg-gray-100 border-2 rounded my-2" th:each="rua : ${r.user_answer}">
+                                <li class="m-2" th:text="${rua}"></li>
+                            </div>
+                        </ul>
+                    </ul>
+                </div>
+                <div class="px-6 border-t border-gray-300 text-gray-600">
+                    <ul class="text-left ml-4 my-2 text-center" th:switch="${r.questions.image_path}">
+                        <li class="font-semibold" th:case="''">Brak zdjecia</li>
+                        <li class="font-semibold text-blue-500" th:case="*"><a th:href="@{${r.questions.image_path}}">Link
+                            do zdjecia</a></li>
+                    </ul>
+                </div>
+
+
+                <div th:switch="${r.earn_points}">
+                    <div th:case="'-1'">
+
+                        <form th:id="${r.questions.id}">
+                            <input type="hidden" name="question_id[]" th:value="${r.questions.id}">
+                            <div class="px-6 border-t border-gray-300 text-gray-600">
+                                <ul class="ml-4 my-4">
+                                    <li><input class="text-center border" type="number" min="0"
+                                               th:max="${r.questions.points}" th:value="0" size=2
+                                               name="earned_points[]"> <b>/</b> <span
+                                            th:text="${r.questions.points}"></span><input type="hidden"
+                                                                                          class="points_per_question"
+                                                                                          th:value="${r.questions.points}">
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="py-3 px-6 border-t border-gray-300 text-gray-600 text-center">
+                                <button type="button" onclick="appendToForm(this)"
+                                        class="checked inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out">
+                                    Zatwierdz odpowiedz
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div th:case="*">
+                        <form class="closedq-form">
+                            <input type="hidden" name="question_id[]" th:value="${r.questions.id}">
+                            <div class="px-6 border-t border-gray-300 text-gray-600">
+                                <ul class="ml-4 my-4">
+                                    <li><input class="text-center border" type="number" min="0"
+                                               th:max="${r.questions.points}" th:value="${r.earn_points}" size=2
+                                               name="earned_points[]" readonly> <b>/</b> <span
+                                            th:text="${r.questions.points}"></span><input type="hidden"
+                                                                                          class="points_per_question"
+                                                                                          th:value="${r.questions.points}">
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="py-3 px-6 border-t border-gray-300 text-gray-600 text-center">
+                            </div>
+                        </form>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <div class="w-full md:w-1/4 bg-gray-400 text-center text-sky-50">
+        <div class="w-full h-full shadow-md bg-gray-800 sticky top-0">
+            <div class="pt-4 pb-2 px-6">
+                <div class="flex items-center mt-20 mb-20">
+                    <div class="shrink-0">
+                    </div>
+                    <div class="grow ml-3">
+                        <a href="/"><p class="text-4xl text-black-600">Wyniki: <span th:text="${s.fullname}"></span>
+                        </p></a>
+                    </div>
+                </div>
+            </div>
+            <ul class="relative px-1" id="accordion">
+                <li class="relative my-6">
+                    <a href="/results" class="text-lg">Wyniki</a>
+                </li>
+                <hr class="my-1 bg-sky-100">
+            </ul>
+
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

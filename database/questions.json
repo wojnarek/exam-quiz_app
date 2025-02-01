@@ -1,0 +1,84 @@
+[{
+  "_id": {
+    "$oid": "6417274de94687404a083be6"
+  },
+  "owner": "641726eee94687404a083be3",
+  "tests_membership": [
+    "64172733e94687404a083be4"
+  ],
+  "test_type": "JW",
+  "question_content": "Ile to jest 2+2?",
+  "answers": [
+    "2",
+    "3",
+    "4",
+    "1"
+  ],
+  "right_answers": [
+    "4"
+  ],
+  "image_path": "",
+  "points": 1,
+  "_class": "com.example.kacper.inzynierka.questions.Question"
+},{
+  "_id": {
+    "$oid": "64172799e94687404a083be7"
+  },
+  "owner": "641726eee94687404a083be3",
+  "tests_membership": [
+    "64172733e94687404a083be4"
+  ],
+  "test_type": "WW",
+  "question_content": "Zaznacz liczby pierwsze:",
+  "answers": [
+    "1",
+    "3",
+    "7",
+    "122",
+    "5",
+    "9",
+    "23"
+  ],
+  "right_answers": [
+    "3",
+    "7",
+    "5",
+    "23"
+  ],
+  "image_path": "",
+  "points": 4,
+  "_class": "com.example.kacper.inzynierka.questions.Question"
+},{
+  "_id": {
+    "$oid": "641727a6e94687404a083be8"
+  },
+  "owner": "641726eee94687404a083be3",
+  "tests_membership": [
+    "64172733e94687404a083be4"
+  ],
+  "test_type": "PF",
+  "question_content": "Czy mozna dzielic przez 0?",
+  "answers": [
+    "Fałsz",
+    "Prawda"
+  ],
+  "right_answers": [
+    "Fałsz"
+  ],
+  "image_path": "",
+  "points": 1,
+  "_class": "com.example.kacper.inzynierka.questions.Question"
+},{
+  "_id": {
+    "$oid": "641727b5e94687404a083be9"
+  },
+  "owner": "641726eee94687404a083be3",
+  "tests_membership": [
+    "64172733e94687404a083be4"
+  ],
+  "test_type": "PO",
+  "question_content": "Podaj wzór na delte",
+  "image_path": "",
+  "points": 3,
+  "_class": "com.example.kacper.inzynierka.questions.Question"
+}]
