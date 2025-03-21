@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: wojnarek/mongodb-examapp:latest
+    container_name: mongodbexamapp
+    ports:
+      - "27017:27017"
+    networks:
+      - spring-net
+
+  spring-app:
+    image: wojnarek/springboot-examapp:latest
+    container_name: spring-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    networks:
+      - spring-net
+
+networks:
+  spring-net:

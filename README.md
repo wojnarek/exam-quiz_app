@@ -7,6 +7,12 @@ The application was created in the COVIDA era with the idea of supporting online
 It has simple mechanisms to prevent cheating like setting the time for a question or browser tab change detection. 
 The app also automatically checks closed questions, or can send an email with the results. 
 
+## How to run?
+You can run app using Docker, just download docker-compose and:
+
+```docker-compose up```
+
+Log in in to app with already created user: tomasz@nowak.pl Tomasz12345@ or register on your own.
 
 ## Technologies
 The application is not a front-end work of art. 
