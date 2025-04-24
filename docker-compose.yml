@@ -3,6 +3,7 @@ version: '3.8'
 services:
   mongodb:
     image: wojnarek/mongodb-examapp:latest
+    restart: always
     container_name: mongodbexamapp
     ports:
       - "27017:27017"
@@ -11,6 +12,7 @@ services:
 
   spring-app:
     image: wojnarek/springboot-examapp:latest
+    restart: always
     container_name: spring-app
     ports:
       - "8080:8080"
