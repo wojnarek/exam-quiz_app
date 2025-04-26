@@ -22,17 +22,21 @@ Packer configuration files are located in:
 
 To build the AMI, run:
 
-``cd terraform/packer``
-``packer init .``
-``packer validate .``
-``packer build app.pkr.hcl``
+```
+cd terraform/packer
+packer init .
+packer validate .
+packer build app.pkr.hcl
+```
 
 After building, copy the generated AMI ID and set it e in the root module.
 
 To deploy the infrastructure, run the following commands:
-``terraform init``
-``terraform plan``
-``terraform apply``
+```
+terraform init
+terraform plan
+terraform apply
+```
 
 #### Infrastructure Overview
 This project creates the following resources:
